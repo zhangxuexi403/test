@@ -6,10 +6,15 @@
 //   });
 //   return res;
 // }
+// function unique(arr) {
+//   let res = [];
+//   return arr.filter(function (item, index, array) {
+//     return res.includes(item) ? false : res.push(item);
+//   });
+// }
 // es6
 // var unique = (arr) => [...new Set(arr)];
 // console.log(unique([1, 1, 2, 2, 2, 9, 9, 8, 6, 4]));
-
 // todo数组扁平化
 // 实现flat效果
 // ?es5
