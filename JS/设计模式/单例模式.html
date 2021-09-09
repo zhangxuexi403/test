@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button id="btn">登录</button>
+    <script>
+      // 划分命名空间，并将属性和方法组织在一起的方式
+      // 只是实例化一次，每次返回的实例都是同一对象
+      var createDiv = function () {
+        var div = document.createElement('div');
+        div.innerHTML = '登录操作';
+        div.style.display = 'none';
+        document.body.appendChild(div);
+        return div;
+      };
+      var createIframe = function () {
+        iframe = document.createElement('iframe');
+        iframe.src = 'http://www.baidu.com';
+        iframe.width = '500px';
+        iframe.height = '500px';
+        document.body.appendChild(iframe);
+        return iframe;
+      };
+      var getInstance = function (fn) {
+        var res;
+        return function () {
+          return res || (res = fn.call(this, ...arguments));
+        };
+      };
+      var createSingletonDiv = getInstance(createDiv);
+      var createSingletonIframe = getInstance(createIframe);
+      btn.onclick = function () {
+        // var div = createSingletonDiv();
+        // div.style.display = 'block';
+        var div = createSingletonIframe.call(this, ...arguments);
+        // var div = createSingletonIframe();
+      };
+      //   var createDiv = (function () {
+      //     var div;
+      //     return function () {
+      //       if (!div) {
+      //         div = document.createElement('div');
+      //         div.innerHTML = '登录操作';
+      //         div.style.display = 'none';
+      //         document.body.appendChild(div);
+      //         return div;
+      //       }
+      //       return div;
+      //     };
+      //   })();
+      //   var createIframe = (function () {
+      //     var iframe;
+      //     return function () {
+      //       if (!iframe) {
+      //         iframe = document.createElement('iframe');
+      //         iframe.src = 'http://www.baidu.com';
+      //         iframe.width = '500px';
+      //         iframe.height = '500px';
+      //         // div.innerHTML = '登录操作';
+      //         // div.style.display = 'none';
+      //         document.body.appendChild(iframe);
+      //         return iframe;
+      //       }
+      //       return iframe;
+      //     };
+      //   })();
+    </script>
+  </body>
+</html>

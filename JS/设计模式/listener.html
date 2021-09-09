@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    // 订阅者模式
+    // 1.主题：(售楼处)；
+    // 2.缓存列表；
+    // 3.当事件触发的时候(事件发生变化)，依次执行回调函数
+    // 不希望一个单独的订阅者就把所有的信息接收到，而希望有标识，例如：张三只对88平感兴趣，
+    var salesOffices = {};
+    // salesOffices.clientList = [];
+    // //  数据格式：[(square88:[]),(square108:[])]
+    // salesOffices.listen = function (key, fn) {
+    //   if (!this.clientList[key]) {
+    //     this.clientList[key] = [];
+    //   }
+    //   this.clientList[key].push(fn);
+    // };
+    // salesOffices.trigger = function () {
+    //   var key = Array.prototype.shift.call(arguments),
+    //     fns = this.clientList[key];
+    //   for (var i = 0; i < fns.length; i++) {
+    //     // 拿arguments的参数
+    //     fns[i].apply(this, arguments);
+    //   }
+    // };
+    // var Event = {
+    //   clientList: [],
+    //   listen: function (key, fn) {
+    //     if (!this.clientList[key]) {
+    //       this.clientList[key] = [];
+    //     }
+    //     this.clientList[key].push(fn);
+    //   },
+    //   trigger() {
+    //     var key = Array.prototype.shift.call(arguments),
+    //       fns = this.clientList[key];
+    //     for (var i = 0; i < fns.length; i++) {
+    //       // 拿arguments的参数
+    //       fns[i].apply(this, arguments);
+    //     }
+    //   }
+    // };
+    // function installEvent(target, Source) {
+    //   // for (var i in Source) {
+    //   //   target[i] = Source[i];
+    //   // }
+    //   // console.log(target);
+    //   // return target;
+    //   return Object.assign(target,Source)
+    // }
+    // var salesOffices = installEvent(salesOffices, Event);
+    class Event {
+      constructor() {
+      //  数据格式：[(square88:[]),(square108:[])]
+        this.clientList = [];
+      }
+      listen(key, fn) {
+        if (!this.clientList[key]) {
+          this.clientList[key] = [];
+        }
+        this.clientList[key].push(fn);
+      }
+      trigger() {
+        var key = Array.prototype.shift.call(arguments),
+          fns = this.clientList[key];
+        for (var i = 0; i < fns.length; i++) {
+          // 拿arguments的参数
+          fns[i].apply(this, arguments);
+        }
+      }
+    }
+    class SalesOffices extends Event {
+      constructor() {
+        super();
+        this.clientList = [];
+      }
+    }
+ 
+    var salesOffices = new SalesOffices();
+
+    salesOffices.listen('square88', function (price, squareMeter) {
+      console.log('价格', price);
+      console.log('面积', squareMeter);
+    }); //张三
+    salesOffices.listen('square88', function (price, squareMeter) {
+      console.log('价格', price);
+      console.log('面积', squareMeter);
+    }); //李四
+    salesOffices.listen('square108', function (price, squareMeter) {
+      console.log('价格', price);
+      console.log('面积', squareMeter);
+    }); //王五
+    salesOffices.listen('square108', function (price, squareMeter) {
+      console.log('价格', price);
+      console.log('面积', squareMeter);
+    }); //赵六
+    // 触发函数
+    salesOffices.trigger('square88', 1000, 88);
+    salesOffices.trigger('square108', 1000, 108);
+  </script>
+</html>
