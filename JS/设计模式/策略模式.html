@@ -9,41 +9,53 @@
   <body>
     <script>
       // strategy策略&&salary薪水&&bonus奖金&&calculate计算
+      // 面向对象写法：
       // 三种策略类
-      var performanceS = function (salary) {};
-      performanceS.prototype.calculate = function (salary) {
-        return salary * 4;
-      };
-      var performanceA = function (salary) {};
-      performanceA.prototype.calculate = function (salary) {
-        return salary * 3;
-      };
-      var performanceB = function (salary) {};
-      performanceB.prototype.calculate = function (salary) {
-        return salary * 2;
-      };
+      // var performanceS = function (salary) {};
+      // performanceS.prototype.calculate = function (salary) {
+      //   return salary * 4;
+      // };
+      // var performanceA = function (salary) {};
+      // performanceA.prototype.calculate = function (salary) {
+      //   return salary * 3;
+      // };
+      // var performanceB = function (salary) {};
+      // performanceB.prototype.calculate = function (salary) {
+      //   return salary * 2;
+      // };
+      // var performanceC = function (salary) {};
+      // performanceC.prototype.calculate = function (salary) {
+      //   return salary * 1;
+      // };
+
       // 奖金类
-      var Bonus = function () {
-        this.salary = null;
-        this.strategy = null;
-      };
-      // 设置薪资
-      Bonus.prototype.setSalary = function (salary) {
-        this.salary = salary;
-      };
-      // 设置绩效(策略)
-      Bonus.prototype.setStrategy = function (strategy) {
-        this.strategy = strategy;
-      };
-      Bonus.prototype.getBonus = function (strategy) {
-        // this.strategy为new performanceS()的实例
-        // this.salary为10000
-        return this.strategy.calculate(this.salary);
-      };
-      var bonus1 = new Bonus();
-      bonus1.setSalary(10000);
-      bonus1.setStrategy(new performanceS());
-      console.log(bonus1.getBonus());
+      // var Bonus = function () {
+      //   this.salary = null;
+      //   this.strategy = null;
+      // };
+      // // 设置薪资
+      // Bonus.prototype.setSalary = function (salary) {
+      //   this.salary = salary;
+      // };
+      // // 设置绩效(策略)
+      // Bonus.prototype.setStrategy = function (strategy) {
+      //   this.strategy = strategy;
+      // };
+      // Bonus.prototype.getBonus = function () {
+      //   return this.strategy.calculate(this.salary);
+      // };
+      // var bonus1 = new Bonus();
+      // bonus1.setSalary(10000);
+      // bonus1.setStrategy(new performanceS());
+      // console.log(bonus1.getBonus());
+      // var bonus2 = new Bonus();
+      // bonus2.setSalary(20000);
+      // bonus2.setStrategy(new performanceB());
+      // console.log(bonus2.getBonus());
+      // var bonus3 = new Bonus();
+      // bonus3.setSalary(10000);
+      // bonus3.setStrategy(new performanceC());
+      // console.log(bonus3.getBonus());
       /**
        * 奖金类指定奖金和策略
        * 奖金类的原型上挂在了三个方法：设置策略setStrategy，设置奖金setSalary，获取计算策略X奖金的方法getBonus
@@ -51,6 +63,24 @@
        * 在策略类内将奖金X计算公式，得到计算结果
        *
        */
+      // 非面向对象写法：
+      var strategies = {
+        S: function (salary) {
+          return salary * 4;
+        },
+        A: function (salary) {
+          return salary * 3;
+        },
+        B: function (salary) {
+          return salary * 2;
+        }
+      };
+      var calculateBouns = function (performancelevel, salary) {
+        return strategies[performancelevel](salary);
+      };
+      console.log(calculateBouns('S', 10000));
+      console.log(calculateBouns('A', 30000));
+      // 向对象中新增方法即可
     </script>
   </body>
 </html>
