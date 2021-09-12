@@ -57,19 +57,21 @@
 
 /**4.寄生式组合继承
  * ?组合继承已经相对完善了，但还是存在问题，他的问题就是调用了2次父类构造函数，第一次是在new Animal()，第二次是在Animal.call()这里。所以解决方案就是不直接调用父类构造函数给子类原型赋值，而是通过空函数F获取父类原型的副本。
+ * ?这只是继承父原型链，继承父本身的属性、方法需要子类内Father.call(Son,name)这种方式来实现
  */
-// function object(o) {
-//   function F() {}
-//   F.prototype = o;
-//   return new F();
-// }
-// function inheritPrototype(child, parent) {
-//   //   let prototype = object(parent.prototype);
-//   let prototype = Object.create(parent.prototype);
-//   child.prototype = prototype;
-//   prototype.constructor = child;
-// }
-// inheritPrototype(Dog, Animal);
+function object(o) {
+  function F() {}
+  F.prototype = o;
+  return new F();
+}
+function inheritPrototype(child, parent) {
+  //   let prototype = object(parent.prototype);
+  let prototype = Object.create(parent.prototype);
+  child.prototype = prototype;
+  prototype.constructor = child;
+}
+inheritPrototype(Dog, Animal);
+
 /**5.class实现继承
  *
  */
