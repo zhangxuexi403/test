@@ -25,11 +25,31 @@
 // foo()();
 
 // 通过改变this指向的方式，拿到其他上下文中的变量
-function foo(fn) {
-  var n = 1;
-  fn.call(this, n);
-}
-function test(n) {
-  console.log(n);
-}
-foo(test);
+// function foo(fn) {
+//   var n = 1;
+//   fn.call(this, n);
+// }
+// function test(n) {
+//   console.log(n);
+// }
+// foo(test);
+
+// 先创建全局执行上下文,然后创建作用域链和变量对象
+// 把函数组作为值放到任务队列里,在规定时刻回调实际就是创建闭包,也就是回调函数
+// 556789
+// for (var i = 0; i < 5; i++) {
+//   setTimeout(() => {
+//     console.log(i++);
+//   }, 4000);
+// }
+// console.log(i);
+//--------------
+// 501234
+// for (var i = 0; i < 5; i++) {
+//   (function (x) {
+//     setTimeout(() => {
+//       console.log(x++);
+//     }, 4000);
+//   })(i);
+// }
+// console.log(i);
