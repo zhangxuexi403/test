@@ -22,6 +22,7 @@ function func(arr, limitNum) {
 func(arr, 10);
 axios.get('url1');
 
+// promise.all
 // 滴滴面试问题
 // commonjs和es的import导入的区别
 // 貌似import是在babel时加载,commonjs是在代码执行时加载

@@ -153,17 +153,45 @@
 // 柯里化的这种封装函数的方式，只是一种思路，目的是同一个通用性很强，接收多个参数的函数转化为多个适用性强，接收参数单一的函数。
 // 柯里化就是把接受【多个参数】的函数变化成接受一个【单一参数】的函数，并且返回接受【余下参数】返回结果的一种应用
 // 思路：1.判断传递的参数是否执行函数的fn个数。2.没有达到的话，继续返回新的函数，并且返回currying函数传递剩余参数
-let currying = (fn, ...args) => {
-  // 函数的参数个数可以直接通过fn.length属性访问
-  // 传入的参数大于等于原始函数fn的参数个数，则直接执行该函数
-  // 传入的参数小于原函数的fn的参数个数时,则继续对当前函数进行柯里化,返回一个接受所有参数(当前参数和剩余参数)的函数
-  return fn.length > args.length ?
-  (...arguments) => currying(fn, ...args,...arguments) :
-  fn(...args) ;
-};
-let addSum = (a, b, c) => a + b + c;
-let add = currying(addSum);
-console.log(add(1)(2)(3));
-console.log(add(1, 2)(3));
-console.log(add(1, 2, 3));
-console.log(addSum.length);
+// let currying = (fn, ...args) => {
+//   // 函数的参数个数可以直接通过fn.length属性访问
+//   // 传入的参数大于等于原始函数fn的参数个数，则直接执行该函数
+//   // 传入的参数小于原函数的fn的参数个数时,则继续对当前函数进行柯里化,返回一个接受所有参数(当前参数和剩余参数)的函数
+//   return fn.length > args.length ?
+//   (...arguments) => currying(fn, ...args,...arguments) :
+//   fn(...args) ;
+// };
+// let addSum = (a, b, c) => a + b + c;
+// let add = currying(addSum);
+// console.log(add(1)(2)(3));
+// console.log(add(1, 2)(3));
+// console.log(add(1, 2, 3));
+// console.log(addSum.length);
+// todo实现数组flat
+// 方式一
+// Array.prototype.flat(num);
+// num表示的是维度
+// 指定要提取嵌套数组的结构深度，默认值为1
+// 使用Infinity,可以展开任意深度的嵌套数组
+// 方式二
+// const flatDeep = arr => {
+//   return arr.reduce((pre, cur, array) => {
+//     if (Array.isArray(cur)) {
+//       // return [...pre, ...flatDeep(cur)];
+//       return pre.concat(flatDeep(cur));
+//     } else {
+//       // return [...pre, cur];
+//       return pre.concat(cur);
+//     }
+//   }, []);
+// };
+// var arr1 = [1, 2, 3, [1, 2, 3, 4, [2, 3, 4]]];
+// console.log(flatDeep(arr1));
+// 方式三
+function flatDeep(arr, d = 1) {
+  return d > 0
+    ? arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val, d - 1) : val), [])
+    : arr.slice();
+}
+var arr1 = [1, 2, 3, [1, 2, 3, 4, [2, 3, 4]]];
+console.log(flatDeep(arr1, Infinity));
