@@ -188,10 +188,154 @@
 // var arr1 = [1, 2, 3, [1, 2, 3, 4, [2, 3, 4]]];
 // console.log(flatDeep(arr1));
 // 方式三
-function flatDeep(arr, d = 1) {
-  return d > 0
-    ? arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val, d - 1) : val), [])
-    : arr.slice();
-}
-var arr1 = [1, 2, 3, [1, 2, 3, 4, [2, 3, 4]]];
-console.log(flatDeep(arr1, Infinity));
+// function flatDeep(arr, d = 1) {
+//   return d > 0
+//     ? arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val, d - 1) : val), [])
+//     : arr.slice();
+// }
+// var arr1 = [1, 2, 3, [1, 2, 3, 4, [2, 3, 4]]];
+// console.log(flatDeep(arr1, Infinity));
+// todo深拷贝，深拷贝解决的就是「共用内存地址所导致的数据错乱问题」
+// 思路：递归，判断类型，即按察环(也叫循环引用)，需要忽略原型
+// function deepClone(obj, map = new WeakMap()) {
+//   console.log(obj, 'oooooo');
+//   console.log(obj.constructor, 'obj.constructor');
+//   if (obj instanceof RegExp) return new RegExp(obj);
+//   if (obj instanceof Date) return new Date(obj);
+//   if (obj == null || typeof obj != 'object') return obj;
+//   // 类型为object才能继续
+//   if (map.has(obj)) return obj;
+//   let t = new obj.constructor();
+//   for (const key in obj) {
+//     if (obj.hasOwnProperty(key)) {
+//       t[key] = deepClone(obj[key], map);
+//     }
+//   }
+//   return t;
+// }
+// let obj = {
+//   a: 1,
+//   b: {
+//     c: 2,
+//     d: 3
+//   },
+//   e: new RegExp(/^\s+|\s$/g)
+// };
+// let clone_obj = deepClone(obj);
+// obj.d = /^\s|[0-9]+$/g;
+// console.log(clone_obj);
+// console.log(obj);
+// todo实现一个对象类型的函数
+// 核心：Object.prototype.toString
+// isType函数，也属于【偏函数】的范畴，偏函数实际上是返回了一个包含【预处理参数】的函数。
+// let isType = type => obj => Object.prototype.toString.call(obj) === `[object ${type}]`;
+// let isArray = isType('Array');
+// let isFunction = isType('Function');
+// console.log(isArray([1, 2, 3]), isFunction(Map));
+// todo手写call和apply
+// 改变this指向，唯一区别就是传递参数不同
+// todo实现call
+// Function.prototype.mycall = function () {
+//   //数组解构，thisArg为改变的this指向，args为数组，...args为参数展开
+//   let [thisArg, ...args] = [...arguments];
+//   thisArg = Object(thisArg) || window;
+//   let fn = Symbol(1);
+//   thisArg[fn] = this;
+//   let result = thisArg[fn](...args);
+//   delete thisArg[fn];
+//   return result;
+// };
+// todo实现apply
+// Function.prototype.myapply = function () {
+//   let [thisArg, args] = [...arguments];
+//   thisArg = Object(thisArg);
+//   let fn = Symbol(1);
+//   thisArg[fn] = this;
+//   let result = thisArg[fn](...args);
+//   delete thisArg[fn];
+//   return result;
+// };
+//测试用例
+// let cc = {
+//   a: 1
+// };
+// function demo(x1, x2) {
+//   console.log(typeof this, this.a, this);
+//   console.log(x1, x2);
+// }
+// demo.apply(cc, [2, 3]);
+// demo.myapply(cc, [2, 3]);
+// demo.call(cc, 33, 44);
+// demo.mycall(cc, 33, 44);
+// todo手写bind
+// 实现bind
+// Function.prototype.mybind = function (context, ...args) {
+//   return (...newArgs) => {
+//     return this.call(context, ...args, ...newArgs);
+//   };
+// };
+// let cc = {
+//   name: 'TianTian'
+// };
+// function say(something, other) {
+//   console.log(`I want to tell ${this.name} ${something}`);
+//   console.log(`This is some` + other);
+// }
+// let tmp = say.mybind(cc, 'happy', 'you are kute');
+// let temp1 = say.bind(cc, 'happy', 'you are kute');
+// tmp();
+// tmp1();
+// todo实现new操作
+// ?理解：
+// ?1.创建一个空对象，并且将this变量引用该对象，同时还继承了该函数的原型
+// ?2.属性和方法被加入到this引用的对象中
+// ?3.新创建的对象由this所引用，并且最后隐式返回this
+// 核心要点
+// 1.创建一个新的对象，这个对象的__proto__要指向构造函数的原型对象
+// 2.执行构造函数
+// 3.返回值为object类型则为new方法的返回值返回，否则返回上述全新对象
+// function _new() {
+//   let obj = {};
+//   let [constructor, ...args] = [...arguments];
+//   obj.__proto__ = constructor.prototype;
+//   let result = constructor.apply(obj, args);
+//   if (result && (typeof result === 'function' || typeof result === 'obejct')) {
+//     return result;
+//   }
+//   return obj;
+// }
+// todo实现instanceof
+// !存在问题的;
+// 【instanceof运算符】用于检测构造函数的prototype属性是否出现在某个实例对象的原型链上。
+// function my_instanceof(leftValue, rightValue) {
+//   if (typeof leftValue !== 'object' || leftValue === null) return false;
+//   let rightProto = rightValue.prototype;
+//   let leftProto = leftValue.__proto__;
+//   while (true) {
+//     if (leftProto === null) {
+//       return false;
+//     }
+//     if (leftProto === rightProto) {
+//       return true;
+//     }
+//     leftProto = leftProto.__proto__;
+//   }
+// }
+// todo实现sleep
+// 某个时间后就去执行某个函数，使用Promise封装
+// function sleep(fn, time) {
+//   return new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//       resolve(fn);
+//     }, time);
+//   });
+// }
+// let saySomething = name => console.log(`hello,${name}`);
+// async function autoPlay() {
+//   let demo1 = await sleep(saySomething('TianTian'), 1000);
+//   let demo2 = await sleep(saySomething('李磊'), 1000);
+//   let demo3 = await sleep(saySomething('掘金的好友们'), 1000);
+// }
+// autoPlay();
+//
+// todo实现Promise.all
