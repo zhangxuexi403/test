@@ -339,3 +339,174 @@
 // autoPlay();
 //
 // todo实现Promise.all
+// Promise.myall = function (arr) {
+//   return new Promise((resolve, reject) => {
+//     if (arr.length === 0) {
+//       return resolve();
+//     } else {
+//       let res = [];
+//       let count = 0;
+//       for (let i = 0; i < arr.length; i++) {
+//         // 同时也能处理arr数组中非Promise对象
+//         if (!(arr[i] instanceof Promise)) {
+//           res[i] = arr[i];
+//           if (++count === arr.length) resolve(res);
+//         } else {
+//           arr[i].then(
+//             data => {
+//               res[i] = data;
+//               if (++count === arr.length) resolve(res);
+//             },
+//             err => {
+//               reject(err);
+//             }
+//           );
+//         }
+//       }
+//     }
+//   });
+// };
+// todo实现Promise.race
+// Promise.myrace = function (arr) {
+//   return new Promise((resolve, reject) => {
+//     for (let i = 0; i < arr.length; i++) {
+//       //  同时还能处理arr数组中非Promise对象
+//       if (!(arr[i] instanceof Promise)) {
+//         Promise.resolve(arr[i]).then(resolve, reject);
+//       } else {
+//         arr[i].then(resolve, reject);
+//       }
+//     }
+//   });
+// };
+// 测试用例
+// let p1 = new Promise((resolve, reject) => {
+//   setTimeout(() => {
+//     resolve(11);
+//   }, 2000);
+// });
+// let p2 = new Promise((resolve, reject) => {
+//   reject('asfs');
+// });
+// let p3 = new Promise(resolve => {
+//   setTimeout(() => {
+//     resolve(33);
+//   }, 4);
+// });
+// Promise.myall([p3, p1, 3, 4]).then(
+//   data => {
+//     // 按传入数组的顺序打印
+//     console.log(data); // [3, 1, 2]
+//   },
+//   err => {
+//     console.log(err);
+//   }
+// );
+// Promise.myrace([p1, p2, p3]).then(
+//   data => {
+//     // 谁快就是谁
+//     console.log(data); // 2
+//   },
+//   err => {
+//     console.log('失败跑的最快');
+//   }
+// );
+// todo手写继承【寄生组合式继承】
+// function inheritPrototype(son, father) {
+//   // 创建对象，创建父类原型的一个副本
+//   var prototype = Object.create(father.prototype);
+//   // 增强对象，弥补因重写原型而失去的默认的constructor属性
+//   prototype.constructor = son;
+//   // 指定对象，将创建的对象赋值给子类的原型
+//   son.prototype = prototype;
+// }
+// 测试用例
+// 父类初始化实例属性和原型属性
+// function Father(name) {
+//   this.name = name;
+//   this.colors = ['red', 'blue', 'green'];
+// }
+// Father.prototype.sayName = function () {
+//   console.log(this.name);
+// };
+// // 借用构造函数传递增强子类实例属性（支持传参和避免篡改）
+// function Son(name, age) {
+//   Father.call(this, name);
+//   this.age = age;
+// }
+// // 将父类原型指向子类
+// inheritPrototype(Son, Father);
+// // 新增子类原型属性
+// Son.prototype.sayAge = function () {
+//   console.log(this.age);
+// };
+// var demo1 = new Son('TianTian', 21);
+// var demo2 = new Son('TianTianUp', 20);
+// demo1.colors.push('2'); // ["red", "blue", "green", "2"]
+// demo2.colors.push('3'); // ["red", "blue", "green", "3"]
+// console.log(demo1);
+// console.log(demo2);
+// todo class实现继承
+// Rectangle矩形
+// class Rectangle {
+//   constructor(height, width) {
+//     this.height = height;
+//     this.width = width;
+//   }
+//   get area() {
+//     return this.calcArea();
+//   }
+//   calcArea() {
+//     return this.height * this.width;
+//   }
+// }
+// const rectangle = new Rectangle(40, 20);
+// console.log(rectangle.area);
+// class Suqare extends Rectangle {
+//   constructor(len) {
+//     super(len, len); //用两个len向父类的构造函数传递width和heigth
+//     this.name = 'SquareIng';
+//   }
+//   get area() {
+//     return this.height * this.width;
+//     // return super.area;
+//   }
+// }
+// const square = new Suqare(10);
+// console.log(square.area);
+// this指向函数所在的当前对象
+// super指向的是当前对象的原型对象
+// super.name===Object.getPrototypeOf(this).name【属性】===Object.getPrototypeOf(this).name.call(this)【方法】
+// super.name指向的是原型对象person中断的name，但是绑定的this还是当前的man对象
+// 1.class中的super()相当于Parent.prototype.constructor.call(this),super表示父类的构造函数，用来创建父类的this对象
+// 2.子类没有自己的this对象，而是继承父类的this对象，然后进行加工。如果不调用super，子类就得不到this对象
+// ES5的继承，实质上是创造子类的实例对象this，然后再将父类的方法添加到this上（Parent.call(this)）
+// ES6的继承，需要先创建父类的this，子类调用super继承父类的this对象，然后再加工。
+// 如果子类没有constructor，这个方法会被默认添加
+// 3.super再静态方法中指向父类，在普通方法中指向父类的原型对象
+// todo extends继承的核心代码如下，实际上和寄生组合继承方式一样
+// function _inherits(Son, Father) {
+//   // 创建对象，创建父类原型的一个副本
+//   // 增强对象，弥补因重写原型而失去的默认的constructor属性
+//   // 指定对象，将新创建的对象赋值给子类的原型
+//   Son.prototype = Object.create(Father && Father.prtotype, {
+//     constructor: {
+//       value: Son,
+//       enumerable: false, //可枚举
+//       writable: true, //可写
+//       configrable: true //可配置
+//     }
+//   });
+//   if (Father) {
+//     Object.setPrototypeOf ? Object.setPrototypeOf(Son, Father) : (Son.__proto__ = Father);
+//   }
+// }
+// todo手写AJAX（简略版本）
+// var request = new XMLHttpRequest();
+// request.open('GET', 'index/a/b/c?name=TianTian', true);
+// request.onreadystatechange = function () {
+//   if (request.readyState === 4 && request.status === 200) {
+//     console.log(request.responseText);
+//   }
+// };
+// request.send();
