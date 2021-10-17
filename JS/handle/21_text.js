@@ -240,8 +240,8 @@
 //   let [thisArg, ...args] = [...arguments];
 //   thisArg = Object(thisArg) || window;
 //   let fn = Symbol(1);
-//   thisArg[fn] = this;
-//   let result = thisArg[fn](...args);
+//   thisArg[fn] = this;//当带哦用mycall方法时，this是调用mycall的方法，将调用的方法记录在thisArg[fn]，thisArg是当前的上下文，fn是symbo临时暂存的属性名
+//   let result = thisArg[fn](...args);//让这个临时存储的方法调用并得到结果
 //   delete thisArg[fn];
 //   return result;
 // };
@@ -269,6 +269,7 @@
 // demo.mycall(cc, 33, 44);
 // todo手写bind
 // 实现bind
+// 用call实现bind，return出去一个未执行的函数
 // Function.prototype.mybind = function (context, ...args) {
 //   return (...newArgs) => {
 //     return this.call(context, ...args, ...newArgs);
@@ -527,22 +528,24 @@
 // function limitRunTask(tasks, n) {
 //   return new Promise((resolve, reject) => {
 //     let index = 0,
-//       finish = 0,
-//       start = 0,
+//       finish = 0, //完成的tasks任务数量·
+//       start = 0, //tasks任务栈中存在的任务数
 //       res = [];
 //     function run() {
 //       if (finish == tasks.length) {
 //         resolve(res);
 //         return;
 //       }
+//       // start不足n且当前指针小于任务总数量，可继续向任务栈中推入任务
 //       while (start < n && index < tasks.length) {
 //         // 每一阶段的任务数量++
 //         start++;
 //         let cur = index;
+//         // tasks的第n项执行，.then时
 //         tasks[index++]().then(v => {
-//           start--;
-//           finish++;
-//           res[cur] = v;
+//           start--; //成功则将任务栈中的任务数量--
+//           finish++; //成功则将完成任务数量++
+//           res[cur] = v; //成功则将当前任务栈中的结果赋值给res中对应的项
 //           run();
 //         });
 //       }
@@ -550,3 +553,130 @@
 //     run();
 //   });
 // }
+// todo JS实现Ajax并发请求控制
+// ?假设现在由这么一种场景：现在30个异步请求需要发送，
+// ?但由于某些原因，我们必须将同一时刻看并发请求数量控制在5个以内，同时还要尽量可能快速的拿到响应。
+// todopromise的串行
+// var p1 = function () {
+//   return new Promise(function (resolve, reject) {
+//     setTimeout(() => {
+//       console.log('1000');
+//       resolve();
+//     }, 1000);
+//   });
+// };
+// var p2 = function () {
+//   return new Promise(function (resolve, reject) {
+//     setTimeout(() => {
+//       console.log('2000');
+//       resolve();
+//     }, 2000);
+//   });
+// };
+// var p3 = function () {
+//   return new Promise(function (resolve, reject) {
+//     setTimeout(() => {
+//       console.log('3000');
+//       resolve();
+//     }, 3000);
+//   });
+// };
+// p1()
+//   .then(() => {
+//     return p2();
+//   })
+//   .then(() => {
+//     return p3();
+//   })
+//   .then(() => {
+//     console.log('end');
+//   });
+// todo promise的并行
+// var promises = function () {
+//   return [1000, 2000, 3000].map(current => {
+//     return new Promise(function (resolve, reject) {
+//       setTimeout(() => {
+//         console.log(current);
+//       }, current);
+//     });
+//   });
+// };
+// Promise.all(promises()).then(res => {
+//   console.log('end');
+// });
+// ?分析问题：
+// ?考虑场景：promises中的数组每个对象都是http请求，而这样的对象有几十万个
+// ?那么对应的情况时，在瞬间发出几十万个http请求，这样很可能导致堆积了无数调用栈导致内存溢出
+// ?这时候，需要考虑对Promise.all做并发限制
+// ?Promise.all并发限制指的是，每个时刻并发执行的promises数量是固定的，最终的执行结果还是保持与原来的Promise.all一致
+// todo整采用递归调用来实现，最初发送的请求数量上限为允许的最大值，并且这些请求中的每一个都应该在完成时递归发送，
+// todo通过传入的索引来确定了urls里面具体时哪个URL，保证最后输出的顺序不会乱，而是依次输出
+// function multiRequest(urls = [], maxNum) {
+//   // 请求总数量
+//   const len = urls.length;
+//   // 根据请求数量创建一个数组来保存请求的结果
+//   const result = new Array(len).fill(false);
+//   // 当前完成的数量
+//   let count = 0;
+//   return new Promise((resolve, reject) => {
+//     // 请求maxNum个
+//     while (count < maxNum) {
+//       next();
+//     }
+//     function next() {
+//       let current = count++; //current完成到了哪一个任务，len总任务数
+//       // 处理边界条件
+//       if (current >= len) {
+//         // 请求全部完成就将promise设置为成功状态，然后将result作为promise值返回
+//         !result.includes(false) && resolve(result);
+//         return;
+//       }
+//       const url = urls[current];
+//       console.log(`开始${current}`, new Date().toLocaleString());
+//       fetch(url)
+//         .then(res => {
+//           // 保存请求的结果
+//           result[current] = res;
+//           console.log(`完成${current}`, new Date().toLocaleString());
+//           // 请求没有全部完成，就递归
+//           if (current < len) {
+//             next();
+//           }
+//         })
+//         .catch(err => {
+//           console.log(`结束${current}`, new Date().toLocaleString());
+//           result[current] = err;
+//           if (current < len) {
+//             next();
+//           }
+//         });
+//     }
+//   });
+// }
+
+// const maxCount = 5;
+// let execQueues = []; //执行队列
+// let pendQueues = []; //等待队列
+// const request = url => {
+//   // 2.1执行函数体
+//   const execFun = url => {
+//     fetch(url).then(res => {
+//       // 2.2完成的出队，等待的入队
+//       if (pendQueues.length > 0) {
+//         const item = pendQueues.pop();
+//         execQueues.push(item);
+//         execFun(item); //2.3新入队立即调用
+//       }
+//     });
+//   };
+//   // 1.1执行队列数量小于最大容量，就继续插入
+//   if (execQueues.length < maxCount) {
+//     execQueues.push(url);
+//     execFun(url); // 1.3插入执行队列就立即调用此异步请求
+//   } else {
+//     // 1.2超过容量就push到等待队列
+//     pendQueues.push(url);
+//   }
+// };
+// !在实际应用中要考虑一种情况：比如五个函数内都调用了这个函数，如何一起控制并发？单例更适合这里，因为实际应用时并发总是控制着整体的
+//
