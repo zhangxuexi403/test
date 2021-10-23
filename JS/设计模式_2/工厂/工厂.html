@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- 简单工厂设计模式 -->
+    <!-- <script>
+      // 咖啡机
+      function makeCoffee(dou, water) {
+        var obj = new Object();
+        obj.dou = dou;
+        obj.water = water;
+        obj.bili = dou / water;
+        return obj;
+      }
+      var coffee = makeCoffee(1, 10);
+      console.log('造出了纯度为', coffee.bili, '的咖啡');
+
+      var coffee = makeCoffee(3, 8);
+      console.log('造出了纯度为', coffee.bili, '的咖啡');
+    </script> -->
+    <!-- 复杂工厂模式 -->
+    <script>
+      function FruitMaker() {}
+
+      FruitMaker.prototype.make = function (type, meta) {
+        //1.判断工厂是否具备生产能力
+        if (typeof this[type] === 'function') {
+          var func = this[type];
+          func.prototype = FruitMaker.prototype; //
+          return new func(meta);
+        } else {
+          throw '很抱歉，工厂不能具备生产能力';
+        }
+      };
+      //扩展生产线
+      FruitMaker.prototype.extends = function (obj) {
+        for (var key in obj) {
+          this[key] = obj[key];
+        }
+      };
+      //苹果汁，梨子汁
+      FruitMaker.prototype.extends({
+        Apple: function (meta) {
+          console.log('造了已被苹果汁,材料有', meta);
+        },
+        Pear: function (meta) {
+          console.log('造了已被梨子汁,材料有', meta);
+        }
+      });
+      //1.实例化、
+      var maker = new FruitMaker();
+      var appleObj = maker.make('Apple', '一个苹果，一斤水');
+      console.log(appleObj.constructor);
+      var pearObj = maker.make('Pear', '两个梨子，一吨水');
+      console.log(pearObj.constructor);
+      var buzhidao = maker.make();
+      console.log(buzhidao); //抛出异常
+      //   prototype,
+    </script>
+  </body>
+</html>

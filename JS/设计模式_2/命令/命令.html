@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- 业务分离，低耦合 -->
+    <script>
+      // 厨师
+      var cook1 = {
+        name: '王小二',
+        make: function (foodType) {
+          switch (foodType) {
+            case 'todou':
+              console.log(this.name, '做土豆');
+              break;
+            case 'jidan':
+              console.log(this.name, '做鸡蛋');
+              break;
+            case 'fanqie':
+              console.log(this.name, '做番茄');
+              break;
+
+            default:
+              console.log('不会做！');
+              break;
+          }
+        }
+      };
+      var cook2 = {
+        name: '王大二',
+        make: function (foodType) {
+          switch (foodType) {
+            case 'todou':
+              console.log(this.name, '做土豆加辣椒');
+              break;
+            case 'jidan':
+              console.log(this.name, '做鸡蛋加辣椒');
+              break;
+            case 'fanqie':
+              console.log(this.name, '做番茄加辣椒');
+              break;
+
+            default:
+              console.log('不会做！');
+              break;
+          }
+        }
+      };
+      // 服务员，帮助客人点餐
+      var foodList = ['tudou', 'jidan', 'fanqie'];
+
+      // 点餐系统
+      function MakeFoodCommand(cook, foodType) {
+        this.cook = cook;
+        this.foodType = foodType;
+      }
+      MakeFoodCommand.prototype.execute = function () {
+        this.cook.make(this.foodType);
+      };
+
+      // 做菜命令
+      var commands = [];
+      for (let i = 0; i < foodList.length; i++) {
+        var command = null;
+        if (i % 2 === 0) {
+          command = new MakeFoodCommand(cook1, foodList[i]);
+        } else {
+          command = new MakeFoodCommand(cook2, foodList[i]);
+        }
+        commands.push(command);
+      }
+      //   console.log(commands);
+      commands.forEach(item => {
+        console.log(item);
+        item.execute();
+      });
+    </script>
+  </body>
+</html>
