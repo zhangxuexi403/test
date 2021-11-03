@@ -58,7 +58,7 @@
     // var salesOffices = installEvent(salesOffices, Event);
     class Event {
       constructor() {
-      //  数据格式：[(square88:[]),(square108:[])]
+        //  数据格式：[(square88:[]),(square108:[])]
         this.clientList = [];
       }
       listen(key, fn) {
@@ -82,7 +82,7 @@
         this.clientList = [];
       }
     }
- 
+
     var salesOffices = new SalesOffices();
 
     salesOffices.listen('square88', function (price, squareMeter) {
