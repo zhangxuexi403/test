@@ -45,6 +45,13 @@
     队尾指针前进1：rear=(rear+1)%MaxSize
     队空条件：rear==front
     队满条件：(rear+1)%MaxSize==front
+    ?双向队列
+    双向队列的两端都支持进队和出队操作
+    双向队列的基本操作：
+    队首进队
+    队首出队
+    队尾进队
+    队尾出队
 */
 class Queue {
   constructor(size = 100) {
