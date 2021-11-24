@@ -47,14 +47,17 @@
 // console.log(a); // => undefined
 // ---------
 // 练习5(在非严格模式下，arguments和形参存在映射关系，一个改都会跟着改)
+// 'use strict';
 // var a = 4;
 // function b(x, y, a) {
-//   console.log(a); //3
-//   arguments[2] = 10; //形参a为10
-//   console.log(a); //10
+//   console.log(a);
+//   arguments[2] = 10; //形参a为10，在非严格模式下会形成映射，开启严格模式下没有这个映射
+//   console.log(a);
 // }
 // a = b(1, 2, 3);
-// console.log(a); //undefined
+// console.log(a);
+//3、10、undefined
+//严格模式3、3、undefined
 // ------------
 // 练习6
 // var a = 10,
@@ -69,13 +72,38 @@
 // console.log(a); //10
 // console.log(b); //11
 // console.log(c); //3
-// ---
-const a = [{ id: 1 }, { id: 1 }, { id: 2 }, { id: 2 }, { id: 3 }];
+// ------
+// 练习7
+// var foo = 'hello';
+// (function (foo) {
+//   //形参赋值 & 变量提升
+//   console.log(foo);
+//   var foo = foo || 'world'; //有foo就不会执行 || 'world'
+//   console.log(foo);
+// })(foo); //把全局的FOO的值"HEELO"作为实参传递给函数的形参
+// console.log(foo);
+//练习7的知识点：
+// function fn(x, callback) {
+//   // typeof x === 'undefined' ? (x = 0) : null;
+//   x = x || 0; //简要写法
+//   // callback代表回调函数(传递的是个函数)：我们需要保证它是一个函数才能执行
+//   // typeof callback === 'function' ? callback() : null;
+//   callback && callback(); //简要写法
+// }
+// fn();
+// fn(10);
+// fn(10, function () {});
+
+/* 
+  a、fn、f
+*/
+
+// const a = [{ id: 1 }, { id: 1 }, { id: 2 }, { id: 2 }, { id: 3 }];
+// // const b = a.filter((item, index) => {
+// //   return a.findIndex(item2 => item.id == item2.id) == index;
+// // });
 // const b = a.filter((item, index) => {
-//   return a.findIndex(item2 => item.id == item2.id) == index;
+//   console.log('itemitem');
+//   return a.findIndex(item2 => item2.id === item.id);
 // });
-const b = a.filter((item, index) => {
-  console.log('itemitem');
-  return a.findIndex(item2 => item2.id === item.id);
-});
-console.log(b);
+// console.log(b);
