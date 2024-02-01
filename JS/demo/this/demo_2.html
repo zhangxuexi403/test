@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      //   function func() {
+      //     this.name = 'gridsum';
+      //   }
+      //   console.log(typeof func.prototype); //object
+      //   func.prototype.getName = function () {
+      //     console.log(this.name);
+      //   };
+      //   const Obj = {};
+      //   Obj.__proto__ = func.prototype;
+      //   func.call(Obj);
+      //   if (Obj.getName) {
+      //     console.log('yes'); //yes
+      //     Obj.getName(); //gridsum
+      //   }
+      //   console.log('end'); //end
+      //object--yes--gridsum--end
+      //   ---------------------
+      function handle() {
+        this.name = '123';
+      }
+      var obj = {};
+      handle.call(obj);
+      console.log(obj); //{name: '123'}
+    </script>
+  </body>
+</html>

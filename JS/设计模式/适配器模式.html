@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 适配不通的数据，接口返回数据格式发生了改变
+      var getBeijingCity = function () {
+        var beijingCity = [
+          { name: 'chaoyang', id: 11 },
+          { name: 'haidian', id: 12 }
+        ];
+        return beijingCity;
+      };
+      var render = function (fn) {
+        console.log('渲染北京地图');
+        console.log(JSON.stringify(fn()));
+      };
+      //   render(getBeijingCity);
+      var addressAdapter = function (oldAdress) {
+        var adress = {},
+          oldAdress = oldAdress(),
+          item;
+        for (let i = 0; i < oldAdress.length; i++) {
+          item = oldAdress[i];
+          adress[item.name] = item.id;
+        }
+        return function () {
+          return adress;
+        };
+      };
+      render(addressAdapter(getBeijingCity));
+      //   var beijing = { chaoyang: 11, haidian: 12 };
+    </script>
+  </body>
+</html>

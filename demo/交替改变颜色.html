@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      body,
+      html {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        box-sizing: content-box;
+      }
+      .container {
+        height: 100%;
+      }
+      .wrap {
+        /* background-color: black; */
+        width: 100%;
+        height: 500px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: aqua;
+      }
+      .box {
+        background-color: red;
+        width: 500px;
+        height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="wrap">
+        <div class="box"></div>
+      </div>
+    </div>
+    <script>
+      let box = document.getElementsByClassName('box')[0];
+      const Colors = ['red', 'orange', 'blue'];
+      let num = 0;
+      setInterval(() => {
+        if (num >= Colors.length - 1) {
+          num = 0;
+        } else {
+          num++;
+        }
+        box.style.backgroundColor = Colors[num];
+      }, 2000);
+    </script>
+  </body>
+</html>

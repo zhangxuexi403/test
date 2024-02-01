@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script type="text/html">
+      function Tool() {} var t1 = new Tool(); var t2 = new Tool(); var t3 = new Tool(); var t4 = new Tool();
+    </script>
+    <!-- 全局变量的方式 -->
+    <script type="text/html">
+      var instance = null; function Tool() { //1.判断 if (instance) { return instance; } // 2.指向 instance = this;
+      this.name = 'zhangjianlun'; this.intro = '学习前端'; } //3.实例化 var t1 = new Tool(); var t2 = new Tool(); var t3
+      = new Tool(); console.log(t1 === t2); console.log(t2 === t3);
+    </script>
+    <!-- 即时函数 -->
+    <script type="text/html">
+      (function (w) { var instance = null; //立即执行函数，外界访问不到instance,保证了安全性 function Tool() { //1.判断
+      if (instance) { return instance; } // 2.指向 instance = this; this.name = 'zhangjianlun'; this.intro = '学习前端';
+      w.Tool = Tool; })(window); //3.实例化 var t1 = new Tool(); var t2 = new Tool(); var t3 = new Tool();
+      console.log(t1 === t2); console.log(t2 === t3);
+    </script>
+    <!-- 惰性函数 -->
+    <script type="text/html">
+      function Tool() { var instance = this; this.name = '张三'; this.age = 18; //
+      惰性函数(函数只会被执行一次,后面直接调用) // 非常懒的函数，在第一次执行修改Tool后就不再执行 Tool = function () {
+      return instance; }; } var t1 = new Tool(); var t2 = new Tool(); console.log(t1 === t2);
+    </script>
+    <!-- 惰性函数的最终版本 -->
+    <script>
+      function Tool() {
+        // 1.声明
+        var instance = this;
+        var oldPrototype = Tool.prototype;
+        this.name = '张三';
+        this.age = 18;
+        // 2.惰性函数(函数只会执行一次，后面直接调用)
+        Tool = function () {
+          return instance; //之后进来返回的都是这个对象，这个对象已经被改造
+        };
+        Tool.prototype = oldPrototype;
+        instance = new Tool();
+        instance.constructor = Tool;
+
+        return instance;
+      }
+
+      var t1 = new Tool();
+      Tool.prototype.run = function () {
+        console.log('跑');
+      };
+      var t2 = new Tool();
+      t1.run();
+      t2.run();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script type="text/html">
+      /* 1.消息的发布者 2.可以让别人订阅你的消息 3.可以发布消息 */ var lk = { //1.1用户群体 targetActions: [],
+      //1.2添加用户 addUser: function (target, action) { var obj = { target: target, action: action };
+      this.targetActions.push(obj); }, // 发布 publishMsg: function () { for (var i = 0, len =
+      this.targetActions.length; i < len; i++) { var obj = this.targetActions[i]; var { target, action } = obj;
+      action.call(target, '11111'); //推送固定的内容 } } }; //送达提醒的回调 function response(str) {
+      console.log('已推送', this.name, '消息为:', str); } var stu1 = { name: '张三' }; var stu2 = { name: '李四' };
+      lk.addUser(stu1, response); lk.addUser(stu2, response); //开始广播 lk.publishMsg();
+    </script>
+    <script>
+      //
+      var lk = {
+        typeTargetAction: {},
+        //1添加用户
+        addUser: function (type, target, action) {
+          // 1.1判断有无该类型，无则创建
+          if (typeof this.typeTargetAction[type] === 'undefined') {
+            this.typeTargetAction[type] = [];
+          }
+          // 1.2创建对象
+          var obj = { target: target, action: action };
+          this.typeTargetAction[type].push(obj);
+        },
+        // 2.发布消息
+        publishMsg: function (type, msgContent) {
+          // 2.1获取学科
+          var targetActions = this.typeTargetAction[type] || [];
+          for (var i = 0, len = targetActions.length; i < len; i++) {
+            var obj = targetActions[i];
+            var { target, action } = obj;
+            action.call(target, msgContent);
+          }
+        }
+      };
+      var stu1 = { name: '张三' };
+      var stu2 = { name: '李四' };
+      lk.addUser('h5', stu1, function (msgContent) {
+        console.log(msgContent, '已经推送给:', this.name);
+      });
+      lk.addUser('java', stu1, function (msgContent) {
+        console.log(msgContent, '已经推送给:', this.name);
+      });
+      lk.addUser('h5', stu2, function (msgContent) {
+        console.log(msgContent, '已经推送给:', this.name);
+      });
+      lk.addUser('python', stu2, function (msgContent) {
+        console.log(msgContent, '已经推送给:', this.name);
+      });
+      // 广播消息
+      lk.publishMsg('h5', 'H5学院消息：今晚不上课！');
+      lk.publishMsg('java', 'Java学院消息：今晚要上课！');
+    </script>
+  </body>
+</html>
